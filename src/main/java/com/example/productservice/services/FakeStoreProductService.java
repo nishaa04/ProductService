@@ -6,6 +6,7 @@ import com.example.productservice.models.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,7 +27,14 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public List<Product> getAllProduct() {
-        return List.of();
+        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(
+                "https://fakestoreapi.com/products", FakeStoreProductDto[].class
+        );
+        List<Product> products = new ArrayList<>();
+        for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
+            products.add(convertFakeStoreProductToProduct(fakeStoreProductDto));
+        }
+        return products;
     }
 
     private Product convertFakeStoreProductToProduct(FakeStoreProductDto fakeStoreProductDto){
